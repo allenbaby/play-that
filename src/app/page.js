@@ -64,9 +64,11 @@ export default function Page() {
 
   return (
     <main className="max-w-4xl mx-auto p-6 pb-40">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold">Meditation Library</h1>
-        <p className="text-muted-foreground">Click a track to play. The player appears at the bottom.</p>
+      <header className="mb-6 text-center">
+        <h1 className="text-2xl font-bold text-primary">Play That!</h1>
+        <p className="text-muted-foreground">
+          Click a track to play. The player appears at the bottom.
+        </p>
       </header>
 
       {loading && <p>Loading…</p>}
