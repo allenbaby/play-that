@@ -79,7 +79,7 @@ export default function MeditationLibrary({
                         onClick={() => setSelectedSection(null)}
                         className={`${selectedSection === null ? 'gradient-primary shadow-glow' : 'hover:bg-secondary/70'} transition-smooth`}
                     >
-                        All Meditations ({tracks.length})
+                        All ({tracks.length})
                     </Button>
 
                     {sections.map(([sec, count]) => (
