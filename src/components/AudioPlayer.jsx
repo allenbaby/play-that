@@ -158,7 +158,7 @@ export default function AudioPlayer({
                                 </Button>
                             </div>
 
-                            <Button
+                            {/* <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setIsFavorite((f) => !f)}
@@ -174,7 +174,7 @@ export default function AudioPlayer({
                                             }`}
                                     />
                                 </span>
-                            </Button>
+                            </Button> */}
                         </div>
                     </div>
 
