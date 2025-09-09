@@ -64,11 +64,12 @@ export default function Page() {
 
   return (
     <main className="max-w-4xl mx-auto p-6 pb-40">
-      <header className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-primary">Play That!</h1>
-        <p className="text-muted-foreground">
-          Click a track to play. The player appears at the bottom.
-        </p>
+      <header className="mb-4 text-center">
+        <img
+          src="/banner.png"
+          alt="Play That! Logo"
+          className="mx-auto h-24"
+        />
       </header>
 
       {loading && <p>Loading…</p>}
