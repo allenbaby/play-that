@@ -39,7 +39,7 @@ export default function TrackCard({
               {isCurrentTrack && isPlaying ? (
                 <Pause className="w-4 h-4" />
               ) : (
-                <Play className="w-4 h-4 ml-0.5" />
+                <Play className="w-4 h-4" />
               )}
             </Button>
 
