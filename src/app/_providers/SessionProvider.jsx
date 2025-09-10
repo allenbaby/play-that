@@ -1,7 +1,7 @@
 // src/app/_providers/SessionProvider.jsx
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabaseBrowser } from "@/lib/supabaseBrowser";
+import { createClient } from "@/lib/supabaseBrowser";
 
 const SessionCtx = createContext({ user: null, loading: true });
 
@@ -9,7 +9,7 @@ export default function SessionProvider({ children }) {
   const [state, setState] = useState({ user: null, loading: true });
 
   useEffect(() => {
-    const sb = supabaseBrowser();
+    const sb = createClient();
     let unsub = () => {};
 
     (async () => {

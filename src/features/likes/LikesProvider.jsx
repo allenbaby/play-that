@@ -2,7 +2,7 @@
 "use client";
 import { createContext, useContext, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabaseBrowser } from "@/lib/supabaseBrowser";
+import { createClient } from "@/lib/supabaseBrowser";
 import { useSession } from "@/app/_providers/SessionProvider";
 
 const LikesCtx = createContext({ likedSet: new Set(), toggleLike: () => {}, isLoading: false });
@@ -15,7 +15,7 @@ export default function LikesProvider({ children }) {
     queryKey: ["favorites", "liked-set", user?.id || "anon"],
     enabled: !loading && !!user,                // wait until user resolved
     queryFn: async () => {
-      const { data, error } = await supabaseBrowser()
+      const { data, error } = await createClient()
         .from("favorites")
         .select("track_id")
         .eq("user_id", user.id);

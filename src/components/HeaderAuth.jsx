@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabaseBrowser } from "@/lib/supabaseBrowser";
+import { createClient } from "@/lib/supabaseBrowser";
 import { LogIn, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -25,7 +25,7 @@ export default function HeaderAuth() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const sb = supabaseBrowser();
+    const sb = createClient();
 
     sb.auth.getUser().then(({ data }) => {
       const u = data?.user ?? null;
@@ -46,7 +46,7 @@ export default function HeaderAuth() {
   async function signInWithGoogle() {
     try {
       setLoading(true);
-      await supabaseBrowser().auth.signInWithOAuth({
+      await createClient().auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
@@ -61,7 +61,7 @@ export default function HeaderAuth() {
   async function signOut() {
     try {
       setLoading(true);
-      await supabaseBrowser().auth.signOut();
+      await createClient().auth.signOut();
     } catch (e) {
       console.error(e);
       setLoading(false);

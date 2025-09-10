@@ -1,38 +1,35 @@
-// src/app/auth/callback/route.js
 import { NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
-
-export const dynamic = 'force-dynamic'
+// The client you created from the Server-Side Auth instructions
+import { createClient } from '@/lib/supabaseServer'
 
 export async function GET(request) {
-    const url = new URL(request.url)
-    const code = url.searchParams.get('code')
+  const { searchParams, origin } = new URL(request.url)
+  const code = searchParams.get('code')
+  // if "next" is in param, use it as the redirect URL
+  let next = searchParams.get('next') ?? '/'
+  if (!next.startsWith('/')) {
+    // if "next" is not a relative URL, use the default
+    next = '/'
+  }
+  console.log('auth callback, next:', next)
 
-    const response = NextResponse.redirect(new URL('/', url.origin))
-
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-        {
-            // NEW API (non-deprecated)
-            cookies: {
-                getAll() { return request.cookies.getAll() },
-                setAll(cookiesToSet) {
-                    console.log("Setting cookies in response from auth callback:", cookiesToSet);
-                    cookiesToSet.forEach(({ name, value, options }) => {
-                        response.cookies.set(name, value, options)
-                    })
-                },
-            },
-            headers: {
-                get(key) { return request.headers.get(key) },
-            },
-        }
-    )
-
-    if (code) {
-        await supabase.auth.exchangeCodeForSession(code) // writes sb-… cookies
+  if (code) {
+    const supabase = await createClient()
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    if (!error) {
+      const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
+      const isLocalEnv = process.env.NODE_ENV === 'development'
+      if (isLocalEnv) {
+        // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
+        return NextResponse.redirect(`${origin}${next}`)
+      } else if (forwardedHost) {
+        return NextResponse.redirect(`https://${forwardedHost}${next}`)
+      } else {
+        return NextResponse.redirect(`${origin}${next}`)
+      }
     }
+  }
 
-    return response
+  // return the user to an error page with instructions
+  return NextResponse.redirect(`${origin}/auth/auth-code-error`)
 }
