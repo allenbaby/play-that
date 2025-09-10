@@ -57,7 +57,6 @@ export default function AudioPlayer({
         if (!a) return;
         const d = isFinite(a.duration) ? a.duration : 0;
         setDuration(d);
-        if (track && d) onDuration?.(track.id, Math.round(d));
     };
 
     const seek = (vals) => {
