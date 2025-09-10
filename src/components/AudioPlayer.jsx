@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Play, Pause, SkipBack, SkipForward, Volume2, Heart } from 'lucide-react';
+import { useLikes } from '@/features/likes/LikesProvider';
+import { useSession } from "@/app/_providers/SessionProvider";
 
 export default function AudioPlayer({
     track,
@@ -11,13 +13,14 @@ export default function AudioPlayer({
     onNext,
     onPrev,
     onEnded,
-    onDuration // (id:number, seconds:number) -> void
 }) {
     const audioRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);          // ← real duration from metadata
     const [volume, setVolume] = useState(0.8);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const { user } = useSession();
+    const { likedSet, toggleLike } = useLikes();
+    const liked = likedSet.has(track?.id);
 
     // load new track
     useEffect(() => {
@@ -54,7 +57,6 @@ export default function AudioPlayer({
         if (!a) return;
         const d = isFinite(a.duration) ? a.duration : 0;
         setDuration(d);
-        // notify page so list can show the real duration for this track
         if (track && d) onDuration?.(track.id, Math.round(d));
     };
 
@@ -158,23 +160,23 @@ export default function AudioPlayer({
                                 </Button>
                             </div>
 
-                            {/* <Button
+                            {!!user && <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => setIsFavorite((f) => !f)}
+                                onClick={(e) => { e.stopPropagation(); toggleLike({ trackId: track.id, like: !liked }); }}
                                 className="hover:bg-secondary/50 shrink-0"
                             >
                                 <span className="relative inline-block w-4 h-4">
                                     <Heart
-                                        className={`absolute inset-0 w-4 h-4 transition-opacity duration-150 ${isFavorite ? 'opacity-0' : 'opacity-100 text-muted-foreground'
+                                        className={`absolute inset-0 w-4 h-4 transition-opacity duration-150 ${liked ? 'opacity-0' : 'opacity-100 text-muted-foreground'
                                             }`}
                                     />
                                     <Heart
-                                        className={`absolute inset-0 w-4 h-4 transition-opacity duration-150 ${isFavorite ? 'opacity-100 fill-accent text-accent' : 'opacity-0'
+                                        className={`absolute inset-0 w-4 h-4 transition-opacity duration-150 ${liked ? 'opacity-100 fill-accent text-accent' : 'opacity-0'
                                             }`}
                                     />
                                 </span>
-                            </Button> */}
+                            </Button>}
                         </div>
                     </div>
 

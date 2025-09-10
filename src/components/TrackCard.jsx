@@ -1,7 +1,9 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Play, Pause, MoreVertical } from 'lucide-react';
+import { Play, Pause, Heart } from 'lucide-react';
+import { useLikes } from '@/features/likes/LikesProvider';
+import { useSession } from "@/app/_providers/SessionProvider";
 
 export default function TrackCard({
   track,
@@ -10,6 +12,9 @@ export default function TrackCard({
   onPlay,
   onPause
 }) {
+  const { user } = useSession();               
+  const { likedSet, toggleLike } = useLikes();  
+  const liked = likedSet.has(track.id); // Check if the current track is liked by the user
   return (
     <Card
       className={[
@@ -20,9 +25,9 @@ export default function TrackCard({
           : 'hover:border-border/60'
       ].join(' ')}
     >
-      {/* Inner content can safely clip */}
+      
       <div className="p-4 overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="flex sm:flex-row sm:items-center gap-3">
           {/* Left: play + text */}
           <div className="flex items-start gap-3 min-w-0 flex-1">
             <Button
@@ -53,16 +58,22 @@ export default function TrackCard({
             </div>
           </div>
 
-          {/* Right: actions */}
-          {/* <div className="flex-shrink-0 self-start sm:self-auto">
+          {!!user && (
             <Button
               variant="ghost"
               size="sm"
-              className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-smooth hover:bg-secondary/50"
+              aria-pressed={liked}
+              onClick={(e) => { e.stopPropagation(); toggleLike({ trackId: track.id, like: !liked }); }}
+              className="hover:bg-secondary/50 shrink-0"
             >
-              <MoreVertical className="w-4 h-4" />
+              <span className="relative inline-block w-4 h-4">
+                {/* outline heart */}
+                <Heart className={`absolute inset-0 w-4 h-4 transition-opacity duration-150 ${liked ? 'opacity-0' : 'opacity-100 text-muted-foreground'}`} />
+                {/* filled heart */}
+                <Heart className={`absolute inset-0 w-4 h-4 transition-opacity duration-150 ${liked ? 'opacity-100 text-accent' : 'opacity-0'}`} style={{ fill: 'currentColor' }} />
+              </span>
             </Button>
-          </div> */}
+          )}
         </div>
 
         {/* Progress */}

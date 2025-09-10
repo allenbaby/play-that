@@ -1,13 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import MeditationLibrary from '../components/MeditationLibrary';
 import AudioPlayer from '../components/AudioPlayer';
+import HeaderAuth from '@/components/HeaderAuth';
+import LikesProvider, { useLikes } from '@/features/likes/LikesProvider';
+import Image from "next/image";
 
-// Set your Drive folder ID here
 const FOLDER_ID = '1_Wy5TIxZGPt42t5G3jhF7nMWdvQ3GsUf';
 
-export default function Page() {
+/** Inner client page that consumes the Likes context */
+function BrowsePageClient() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
@@ -16,8 +19,17 @@ export default function Page() {
   const [current, setCurrent] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // load list (no durations at all)
+  // ---- Likes context (one favorites fetch for entire page) ----
+  const { likedSet, toggleLike } = useLikes();
+
+  // DEV double-mount guard (React StrictMode)
+  const fetchedRef = useRef(false);
+
+  // load list (no durations at all) - one call, guarded in dev
   useEffect(() => {
+    if (fetchedRef.current) return;
+    fetchedRef.current = true;
+
     (async () => {
       setLoading(true);
       try {
@@ -45,9 +57,12 @@ export default function Page() {
     }));
     setTracks(mapped);
     if (!current && mapped.length) setCurrent(mapped[0]);
-  }, [items]);
+  }, [items]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const idx = useMemo(() => (current ? tracks.findIndex((t) => t.id === current.id) : -1), [tracks, current]);
+  const idx = useMemo(
+    () => (current ? tracks.findIndex((t) => t.id === current.id) : -1),
+    [tracks, current]
+  );
 
   const selectTrack = (t) => { setCurrent(t); setIsPlaying(true); };
   const togglePlay = () => setIsPlaying((p) => !p);
@@ -62,18 +77,26 @@ export default function Page() {
     setCurrent(p); setIsPlaying(true);
   };
 
+  // Optional: public like counts for all tracks on the page (batch once)
+  // const ids = useMemo(() => tracks.map(t => t.id), [tracks]);
+  // const { data: counts } = useLikeCounts(ids); // Map<trackId, count>
+
   return (
     <main className="max-w-4xl mx-auto p-6 pb-40">
-      <header className="mb-4 text-center">
-        <img
+      <header className="mb-4 flex items-center justify-between">
+        <Image
           src="/banner.png"
           alt="Play That! Logo"
-          className="mx-auto h-24"
+          width={320}
+          height={80}
+          className="h-20 w-auto"
         />
+        <HeaderAuth />
       </header>
 
       {loading && <p>Loading…</p>}
       {err && <p className="text-red-600">{err}</p>}
+
       {!loading && !err && (
         <MeditationLibrary
           tracks={tracks}
@@ -82,6 +105,13 @@ export default function Page() {
           onTrackSelect={selectTrack}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
+
+          // NEW: likes – pass the liked set + toggler
+          likedSet={likedSet}                           // Set<string>
+          onToggleLike={(trackId, next) => toggleLike({ trackId, like: next })}
+
+        // If you want to show counts inside the library:
+        // getLikeCount={(trackId) => counts?.get(trackId) ?? 0}
         />
       )}
 
@@ -94,5 +124,14 @@ export default function Page() {
         onEnded={next}
       />
     </main>
+  );
+}
+
+/** Page: attach LikesProvider once, then render the inner page */
+export default function Page() {
+  return (
+    <LikesProvider>
+      <BrowsePageClient />
+    </LikesProvider>
   );
 }
