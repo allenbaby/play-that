@@ -89,7 +89,7 @@ function BrowsePageClient() {
           alt="Play That! Logo"
           width={320}
           height={80}
-          className="h-20 w-auto"
+          priority
         />
         <HeaderAuth />
       </header>
