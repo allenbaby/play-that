@@ -39,6 +39,7 @@ function BrowsePageClient() {
 
   const { user } = useSession();
   const fetchedRef = useRef(false);
+  const bootstrappedRef = useRef(false);
 
   // 1) Load items once
   useEffect(() => {
@@ -159,6 +160,20 @@ function BrowsePageClient() {
   const handleViewKeyChange = useCallback((key) => {
     setViewKey((prev) => (prev === key ? prev : key));
   }, []);
+
+  // 9) 🔰 One-time default: when All tab first reports its list, pick #1 and capture queue
+  useEffect(() => {
+    if (bootstrappedRef.current) return;
+    if (viewKey !== 'all') return;                 // only bootstrap from All
+    if (currentId) return;                         // user already selected something
+    if (!visibleIds.length) return;                // nothing to seed yet
+
+    setQueueIds(visibleIds);
+    setQueueKey('all');
+    setCurrentId(visibleIds[0]);                   // show player with first track
+    setIsPlaying(false);                           // don't auto-play
+    bootstrappedRef.current = true;
+  }, [visibleIds, viewKey, currentId]);
 
   return (
     <main className="max-w-4xl mx-auto p-6 pb-40">
