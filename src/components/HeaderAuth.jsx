@@ -1,4 +1,3 @@
-// src/components/HeaderAuth.jsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -48,9 +47,7 @@ export default function HeaderAuth() {
       setLoading(true);
       await createClient().auth.signInWithOAuth({
         provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
+        options: { redirectTo: `${window.location.origin}/auth/callback` },
       });
     } catch (e) {
       console.error(e);
@@ -69,21 +66,22 @@ export default function HeaderAuth() {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    // Compact and non-wrapping on mobile
+    <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 whitespace-nowrap">
       {userEmail ? (
         <>
-          {/* Avatar (with next/image) */}
+          {/* Avatar (smaller on mobile) */}
           {avatarUrl ? (
             <Image
               src={avatarUrl}
               alt="avatar"
               width={36}
               height={36}
-              className="h-8 w-8 sm:h-9 sm:w-9 rounded-full border border-[var(--border)] object-cover"
+              className="h-7 w-7 sm:h-9 sm:w-9 rounded-full border border-[var(--border)] object-cover"
               priority={false}
             />
           ) : (
-            <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full flex items-center justify-center border border-[var(--border)] bg-[var(--secondary)]">
+            <div className="h-7 w-7 sm:h-9 sm:w-9 rounded-full flex items-center justify-center border border-[var(--border)] bg-[var(--secondary)]">
               <User className="h-4 w-4 text-[var(--secondary-foreground)]" />
             </div>
           )}
@@ -97,7 +95,7 @@ export default function HeaderAuth() {
             {userEmail}
           </span>
 
-          {/* Logout button */}
+          {/* Logout (icon-only on mobile; text shows on sm+) */}
           <Button
             type="button"
             onClick={signOut}
@@ -108,6 +106,7 @@ export default function HeaderAuth() {
               color: "var(--secondary-foreground)",
               borderColor: "var(--border)",
             }}
+            title="Log out"
           >
             <LogOut className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">Log out</span>
@@ -118,12 +117,12 @@ export default function HeaderAuth() {
           type="button"
           onClick={signInWithGoogle}
           disabled={loading}
+          title="Sign in with Google"
           className="h-8 sm:h-9 px-2 sm:px-3 rounded-xl shadow-sm transition-smooth focus:outline-none"
           style={{
             background: "var(--primary)",
             color: "var(--primary-foreground)",
-            boxShadow:
-              "0 0 0 0px transparent, 0 8px 24px -10px oklch(0.72 0.18 45 / 45%)",
+            boxShadow: "0 0 0 0px transparent, 0 8px 24px -10px oklch(0.72 0.18 45 / 45%)",
           }}
         >
           <LogIn className="h-4 w-4 sm:mr-2" />

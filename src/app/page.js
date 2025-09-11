@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import MeditationLibrary from '../components/MeditationLibrary';
 import AudioPlayer from '../components/AudioPlayer';
 import HeaderAuth from '@/components/HeaderAuth';
-import LikesProvider, {useLikes} from '@/features/likes/LikesProvider';
+import LikesProvider, { useLikes } from '@/features/likes/LikesProvider';
 import Image from 'next/image';
 import StreakBadge from '@/components/StreakBadge';
 import { useSession } from '@/app/_providers/SessionProvider';
@@ -162,10 +162,26 @@ function BrowsePageClient() {
 
   return (
     <main className="max-w-4xl mx-auto p-6 pb-40">
-      <header className="mb-4 flex items-center justify-between">
-        <Image src="/banner.png" alt="Play That! Logo" width={320} height={80} priority />
-        <HeaderAuth />
+      <header className="mb-4 flex items-center gap-2 sm:gap-3">
+        {/* Left: banner that can shrink */}
+        <div className="min-w-0 flex-1">
+          <Image
+            src="/banner.png"
+            alt="Play That! Logo"
+            width={320}
+            height={80}
+            sizes="(max-width: 480px) 150px, (max-width: 640px) 200px, 320px"
+            className="block h-auto w-[150px] xs:w-[180px] sm:w-[200px] md:w-[320px] max-w-full"
+            priority
+          />
+        </div>
+
+        {/* Right: compact auth cluster that never overflows */}
+        <div className="flex-shrink-0">
+          <HeaderAuth />
+        </div>
       </header>
+
 
       {loading && <p>Loading…</p>}
       {err && <p className="text-red-600">{err}</p>}
