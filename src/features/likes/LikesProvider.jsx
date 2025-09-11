@@ -4,6 +4,7 @@ import { createContext, useContext, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabaseBrowser";
 import { useSession } from "@/app/_providers/SessionProvider";
+import { SupabaseClient } from "@supabase/supabase-js";
 
 const LikesCtx = createContext({ likedSet: new Set(), toggleLike: () => {}, isLoading: false });
 
@@ -32,11 +33,11 @@ export default function LikesProvider({ children }) {
     mutationFn: async ({ trackId, like }) => {
       if (!user) throw new Error("not-authenticated");
       if (like) {
-        const { error } = await supabaseBrowser().from("favorites")
+        const { error } = await createClient().from("favorites")
           .insert({ user_id: user.id, track_id: trackId });
         if (error && error.code !== "23505") throw error;
       } else {
-        const { error } = await supabaseBrowser().from("favorites")
+        const { error } = await createClient().from("favorites")
           .delete().eq("user_id", user.id).eq("track_id", trackId);
         if (error) throw error;
       }
