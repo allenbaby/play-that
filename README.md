@@ -1,36 +1,165 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🧘 Meditation App
 
-## Getting Started
+A full-stack meditation and mindfulness web app built with **Next.js 15**, **React 19**, and **Supabase**.  
+It provides a library of meditation tracks, user authentication, streak tracking, and likes to encourage consistent practice.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📂 Project Structure
+```
+public/
+  banner.png           # App banner image
+
+src/
+  app/
+    page.js            # Main landing page
+    layout.js          # Root layout with providers
+    globals.css        # Global Tailwind styles
+    api/               # API routes
+      drive/[id]/route.js     # Fetch track by ID
+      drive-list/route.js     # List available meditation tracks
+      like-counts/route.js    # Manage likes
+      streak/route.js         # Track user streaks
+    auth/callback/route.js    # Authentication callback
+    _providers/        # Context providers
+      QueryProvider.jsx
+      SessionProvider.jsx
+  components/          # Reusable UI components
+    AudioPlayer.jsx
+    MeditationLibrary.jsx
+    StreakBadge.jsx
+    TrackCard.jsx
+    HeaderAuth.jsx
+    ui/                # Radix/Tailwind UI wrappers
+      button.jsx
+      card.jsx
+      input.jsx
+      slider.jsx
+  features/
+    likes/LikesProvider.jsx   # Context provider for likes
+  lib/
+    supabaseBrowser.js
+    supabaseServer.js
+    utils.js
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🚀 Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
+- [Node.js](https://nodejs.org/) 18+
+- [Supabase](https://supabase.com/) project (with API keys)
+- A `.env.local` file with the following variables:
 
-## Learn More
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Installation
+```bash
+git clone https://github.com/your-username/meditation-app.git
+cd meditation-app
+npm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Running Locally
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Then open your browser at [http://localhost:3000](http://localhost:3000).
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛠️ Tech Stack
+- **Next.js 15** – App Router & Server Components
+- **React 19**
+- **Supabase** – Auth, database, and storage
+- **TanStack React Query** – Data fetching and caching
+- **Radix UI** + **Tailwind CSS** – Accessible UI components
+- **Lucide React** – Icons
+- **Luxon** – Date/time handling
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🎯 Features
+
+### 🔑 Authentication
+- Supabase-powered login/signup.
+- Callback route (`/auth/callback`) handles session creation.
+
+### 🎵 Meditation Library
+- Displays available tracks from Supabase storage (`drive-list`).
+- Users can play audio using the `AudioPlayer` component.
+- `TrackCard` shows metadata (title, duration, likes).
+
+### ❤️ Likes
+- Users can like meditation tracks.
+- Handled via `like-counts` API and `LikesProvider` context.
+- `TrackCard` displays like count in real time.
+
+### 🔥 Streak Tracking
+- Keeps track of daily meditation streaks.
+- `StreakBadge` visualizes user progress.
+- Data managed by the `/api/streak` route.
+
+### 🧑‍💻 Providers
+- **SessionProvider** – Supplies Supabase authentication session.
+- **QueryProvider** – Wraps TanStack Query for caching and async state.
+
+### 📱 Responsive Design
+- Built with **Tailwind CSS**.
+- Radix UI for accessibility.
+- Optimized for both desktop and mobile.
+
+---
+
+## 📦 Deployment
+This project is optimized for deployment on **Vercel**:
+
+```bash
+vercel
+```
+
+Make sure to add your environment variables in Vercel’s dashboard.
+
+---
+
+## 📝 Usage Guide
+
+1. **Sign Up / Log In**  
+   - Use the Supabase auth flow to create an account.  
+   - Session is persisted via `SessionProvider`.
+
+2. **Browse Meditations**  
+   - Navigate to the Meditation Library.  
+   - Tracks are loaded dynamically from Supabase storage.
+
+3. **Play a Track**  
+   - Use the `AudioPlayer` to listen.  
+   - Supports pause/resume.
+
+4. **Like a Track**  
+   - Click the like button on any track card.  
+   - Updates count instantly via `like-counts` API.
+
+5. **Maintain Streaks**  
+   - Meditating once per day updates your streak count.  
+   - Check your `StreakBadge` for motivation!
+
+---
+
+## 🤝 Contributing
+Pull requests are welcome.  
+For major changes, open an issue first to discuss improvements.
+
+---
+
+## 📄 License
+[MIT](LICENSE)
+
+---
+✨ Happy Meditating! ✨

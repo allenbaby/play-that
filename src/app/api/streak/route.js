@@ -32,7 +32,6 @@ export async function POST() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
-  // DB function should be public.check_in_now() as we set up earlier
   const { data, error } = await supabase.rpc('check_in_now');
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
