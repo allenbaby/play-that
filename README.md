@@ -98,8 +98,8 @@ Then open your browser at [http://localhost:3000](http://localhost:3000).
 
 ### ❤️ Likes
 - Users can like meditation tracks.
-- Handled via `like-counts` API and `LikesProvider` context.
-- `TrackCard` displays like count in real time.
+- Handled `LikesProvider` context.
+- `MeditationLibrary` displays like count in real time.
 
 ### 🔥 Streak Tracking
 - Keeps track of daily meditation streaks.
@@ -136,7 +136,7 @@ Make sure to add your environment variables in Vercel’s dashboard.
 
 2. **Browse Meditations**  
    - Navigate to the Meditation Library.  
-   - Tracks are loaded dynamically from Supabase storage.
+   - Tracks are loaded dynamically from a google drive link (https://drive.google.com/drive/folders/1_Wy5TIxZGPt42t5G3jhF7nMWdvQ3GsUf).
 
 3. **Play a Track**  
    - Use the `AudioPlayer` to listen.  
@@ -147,7 +147,7 @@ Make sure to add your environment variables in Vercel’s dashboard.
    - Updates count instantly via `like-counts` API.
 
 5. **Maintain Streaks**  
-   - Meditating once per day updates your streak count.  
+   - Meditating and completing any track once per day updates your streak count.  
    - Check your `StreakBadge` for motivation!
 
 ---
