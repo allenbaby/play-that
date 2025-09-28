@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 // The client you created from the Server-Side Auth instructions
 import { createClient } from '@/lib/supabaseServer'
-import { DateTime } from 'luxon'
 
 export async function GET(request) {
     const { searchParams, origin } = new URL(request.url)
@@ -12,7 +11,6 @@ export async function GET(request) {
         // if "next" is not a relative URL, use the default
         next = '/'
     }
-    console.log('auth callback, next:', next)
 
     if (code) {
         const supabase = await createClient()
