@@ -3,7 +3,11 @@
 A full-stack meditation and mindfulness web app built with **Next.js 15**, **React 19**, and **Supabase**.  
 It provides a library of meditation tracks, user authentication, streak tracking, and likes to encourage consistent practice.
 
-![Screenshot](./public/home.png)
+<p align="center">
+  <img src="./public/home.png" alt="Home Screenshot" height="400px" />
+  <img src="./public/mobile.png" alt="Mobile Screenshot" height="400px" />
+</p>
+
 
 ---
 
