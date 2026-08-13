@@ -59,9 +59,17 @@ src/
 - A `.env.local` file with the following variables:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
+# Supabase (client-facing)
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+
+# Supabase (server-side)
+# Use your Supabase project URL and service role key for server operations
+SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# Optional external APIs
+GOOGLE_DRIVE_API_KEY=your-google-drive-api-key
 ```
 
 ### Installation
